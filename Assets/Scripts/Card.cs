@@ -4,13 +4,10 @@ using UnityEngine;
 public class Card : MonoBehaviour
 {
     private SpriteRenderer _spriteRenderer;
-    private SpawnedCardsController _gameManager;
 
     private void Awake()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
-        _gameManager = FindObjectOfType<SpawnedCardsController>();
-        _spriteRenderer.color = Random.ColorHSV();
     }
 
     public void SetSortingOrder(int order)

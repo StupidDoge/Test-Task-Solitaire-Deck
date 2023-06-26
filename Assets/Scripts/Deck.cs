@@ -5,18 +5,18 @@ using System.Collections.Generic;
 public class Deck : MonoBehaviour
 {
     public static event Action<Card> OnDeckClicked;
-    private const int DECK_SIZE = 52;
 
     [SerializeField] private Card _card;
+    [SerializeField] private Sprite[] _cardsSprites;
 
     private Queue<Card> _cards = new();
     private SpriteRenderer _spriteRenderer;
 
-    public Queue<Card> Cards => _cards;
-
     private void Awake()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        System.Random random = new();
+        random.Shuffle(_cardsSprites);
         SpawnDeck();
     }
 
@@ -35,11 +35,12 @@ public class Deck : MonoBehaviour
 
     private void SpawnDeck()
     {
-        for (int i = 0; i < DECK_SIZE; i++)
+        for (int i = 0; i < _cardsSprites.Length; i++)
         {
             Card card = Instantiate(_card, transform.position, Quaternion.identity);
             card.transform.SetParent(transform);
             card.gameObject.SetActive(false);
+            card.SetCardSprite(_cardsSprites[i]);
             _cards.Enqueue(card);
         }
     }

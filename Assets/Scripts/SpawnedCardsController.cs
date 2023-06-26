@@ -1,13 +1,13 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SpawnedCardsController : MonoBehaviour
 {
     private enum OrderLayers
     {
-        First = 1,
+        First = 3,
         Second = 2,
-        Third = 3
+        Third = 1,
+        InDeck = 0
     }
 
     [SerializeField] private Deck _deck;
