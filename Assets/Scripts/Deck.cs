@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class Deck : MonoBehaviour
 {
-    public static event Action<Card> OnDeckClicked;
+    public event Action<Card> OnDeckClicked;
 
     [SerializeField] private Card _card;
     [SerializeField] private Sprite[] _cardsSprites;
