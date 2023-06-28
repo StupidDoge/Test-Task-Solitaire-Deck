@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class SpawnedCardsController : MonoBehaviour
 {
@@ -10,33 +11,21 @@ public class SpawnedCardsController : MonoBehaviour
         InDeck = 0
     }
 
-    [SerializeField] private Deck _deck;
     [SerializeField] private Transform _firstCardPosition;
     [SerializeField] private Transform _secondCardPosition;
     [SerializeField] private Transform _thirdCardPosition;
 
     [SerializeField] private Card[] _openedCards = new Card[3];
 
-    public Transform FirstCardPosition => _firstCardPosition;
-    public Transform SecondCardPosition => _secondCardPosition;
-    public Transform ThirdCardPosition => _thirdCardPosition;
+    public Queue<Card> PreviousCards { get; private set; } = new();
 
-    private void OnEnable()
-    {
-        _deck.OnDeckClicked += OpenNewCard;
-    }
-
-    private void OnDisable()
-    {
-        _deck.OnDeckClicked -= OpenNewCard;
-    }
-
-    private void OpenNewCard(Card card)
+    public void OpenNewCard(Card card)
     {
         if (_thirdCardPosition.childCount != 0)
         {
-            SetupCard(_openedCards[2], _deck.transform, (int)OrderLayers.InDeck);
-            _deck.ReturnCardToDeck(_openedCards[2]);
+            SetupCard(_openedCards[2], _thirdCardPosition.transform, (int)OrderLayers.InDeck);
+            _openedCards[2].gameObject.SetActive(false);
+            PreviousCards.Enqueue(_openedCards[2]);
         }
 
         if (_secondCardPosition.childCount != 0)
@@ -61,5 +50,20 @@ public class SpawnedCardsController : MonoBehaviour
         card.transform.position = targetTransform.position;
         card.transform.parent = targetTransform;
         card.SetSortingOrder(sortingLayer);
+    }
+
+    public void ClearOpenedCards()
+    {
+        for (int i = _openedCards.Length - 1; i >= 0; i--)
+        {
+            _openedCards[i].gameObject.SetActive(false);
+            _openedCards[i].transform.parent = _thirdCardPosition;
+            PreviousCards.Enqueue(_openedCards[i]);
+        }
+    }
+
+    public void ClearPreviousCards()
+    {
+        PreviousCards.Clear();
     }
 }

@@ -1,13 +1,11 @@
 using UnityEngine;
-using System;
 using System.Collections.Generic;
 
 public class Deck : MonoBehaviour
 {
-    public event Action<Card> OnDeckClicked;
-
     [SerializeField] private Card _card;
     [SerializeField] private Sprite[] _cardsSprites;
+    [SerializeField] private SpawnedCardsController _spawnedCardsController;
 
     private Queue<Card> _cards = new();
     private SpriteRenderer _spriteRenderer;
@@ -22,14 +20,26 @@ public class Deck : MonoBehaviour
 
     private void OnMouseDown()
     {
-        OnDeckClicked?.Invoke(_cards.Dequeue());
         if (_cards.Count == 0)
         {
+            _spriteRenderer.enabled = true;
+            _spawnedCardsController.ClearOpenedCards();
+            _cards = new Queue<Card>(_spawnedCardsController.PreviousCards);
+            _spawnedCardsController.ClearPreviousCards();
+            foreach (Card card in _cards)
+            {
+                card.transform.SetParent(transform);
+            }
+        }
+        else if (_cards.Count == 1)
+        {
             _spriteRenderer.enabled = false;
+            _spawnedCardsController.OpenNewCard(_cards.Dequeue());
         }
         else
         {
             _spriteRenderer.enabled = true;
+            _spawnedCardsController.OpenNewCard(_cards.Dequeue());
         }
     }
 
@@ -43,11 +53,5 @@ public class Deck : MonoBehaviour
             card.SetCardSprite(_cardsSprites[i]);
             _cards.Enqueue(card);
         }
-    }
-
-    public void ReturnCardToDeck(Card card)
-    {
-        _cards.Enqueue(card);
-        card.gameObject.SetActive(false);
     }
 }
