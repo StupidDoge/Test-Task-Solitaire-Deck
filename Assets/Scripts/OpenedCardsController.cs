@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 
-public class SpawnedCardsController : MonoBehaviour
+public class OpenedCardsController : MonoBehaviour
 {
     private enum OrderLayers
     {
@@ -92,7 +92,7 @@ public class SpawnedCardsController : MonoBehaviour
         card.SetSortingOrder(sortingLayer);
     }
 
-    public void ClearOpenedCards()
+    public void CollectOpenedCards()
     {
         for (int i = _openedCards.Length - 1; i >= 0; i--)
         {
@@ -100,10 +100,5 @@ public class SpawnedCardsController : MonoBehaviour
             _openedCards[i].transform.parent = _thirdCardPosition;
             PreviousCards.Enqueue(_openedCards[i]);
         }
-    }
-
-    public void ClearPreviousCards()
-    {
-        PreviousCards.Clear();
     }
 }

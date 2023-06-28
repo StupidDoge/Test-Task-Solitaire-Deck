@@ -4,8 +4,8 @@ using System.Collections.Generic;
 public class Deck : MonoBehaviour
 {
     [SerializeField] private Card _card;
+    [SerializeField] private OpenedCardsController _spawnedCardsController;
     [SerializeField] private Sprite[] _cardsSprites;
-    [SerializeField] private SpawnedCardsController _spawnedCardsController;
 
     private Queue<Card> _cards = new();
     private SpriteRenderer _spriteRenderer;
@@ -24,9 +24,9 @@ public class Deck : MonoBehaviour
         if (_cards.Count == 0)
         {
             _spriteRenderer.enabled = true;
-            _spawnedCardsController.ClearOpenedCards();
+            _spawnedCardsController.CollectOpenedCards();
             _cards = new Queue<Card>(_spawnedCardsController.PreviousCards);
-            _spawnedCardsController.ClearPreviousCards();
+            _spawnedCardsController.PreviousCards.Clear();
             foreach (Card card in _cards)
             {
                 card.transform.SetParent(transform);
