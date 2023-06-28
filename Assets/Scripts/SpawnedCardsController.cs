@@ -9,7 +9,8 @@ public class SpawnedCardsController : MonoBehaviour
         First = 3,
         Second = 2,
         Third = 1,
-        InDeck = 0
+        InDeck = 0,
+        Opening = 100
     }
 
     [Header("Parent Transforms")]
@@ -49,8 +50,9 @@ public class SpawnedCardsController : MonoBehaviour
 
         _openedCards[0] = card;
         _openedCards[0].gameObject.SetActive(true);
-        StartCoroutine(RotateCard(_openedCards[0]));
-        SetupCard(_openedCards[0], _firstCardPosition, (int)OrderLayers.First);
+        StartCoroutine(RotateCard(_openedCards[0], (int)OrderLayers.First));
+        StartCoroutine(MoveCard(card, _firstCardPosition));
+        card.transform.parent = _firstCardPosition;
     }
 
     private void SetupCard(Card card, Transform targetTransform, int sortingLayer)
@@ -71,11 +73,13 @@ public class SpawnedCardsController : MonoBehaviour
         }
     }
 
-    private IEnumerator RotateCard(Card card)
+    private IEnumerator RotateCard(Card card, int sortingLayer)
     {
         float elapsedTime = 0f;
         Quaternion startRotation = card.transform.rotation;
         Quaternion targetRotation = Quaternion.identity;
+
+        card.SetSortingOrder((int)OrderLayers.Opening);
         while (elapsedTime < _cardRotationDuration)
         {
             elapsedTime += Time.deltaTime;
@@ -85,6 +89,7 @@ public class SpawnedCardsController : MonoBehaviour
         }
 
         card.transform.rotation = targetRotation;
+        card.SetSortingOrder(sortingLayer);
     }
 
     public void ClearOpenedCards()
