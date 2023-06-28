@@ -630,6 +630,7 @@ MonoBehaviour:
   _secondCardPosition: {fileID: 1243705481}
   _thirdCardPosition: {fileID: 1295882454}
   _cardMoveDuration: 0.25
+  _cardRotationDuration: 0.25
   _openedCards:
   - {fileID: 0}
   - {fileID: 0}

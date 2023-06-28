@@ -12,11 +12,16 @@ public class SpawnedCardsController : MonoBehaviour
         InDeck = 0
     }
 
+    [Header("Parent Transforms")]
     [SerializeField] private Transform _firstCardPosition;
     [SerializeField] private Transform _secondCardPosition;
     [SerializeField] private Transform _thirdCardPosition;
-    [SerializeField] private float _cardMoveDuration;
 
+    [Header("Animations Durations")]
+    [SerializeField] private float _cardMoveDuration;
+    [SerializeField] private float _cardRotationDuration;
+
+    [Space]
     [SerializeField] private Card[] _openedCards = new Card[3];
 
     public Queue<Card> PreviousCards { get; private set; } = new();
@@ -44,6 +49,7 @@ public class SpawnedCardsController : MonoBehaviour
 
         _openedCards[0] = card;
         _openedCards[0].gameObject.SetActive(true);
+        StartCoroutine(RotateCard(_openedCards[0]));
         SetupCard(_openedCards[0], _firstCardPosition, (int)OrderLayers.First);
     }
 
@@ -63,6 +69,22 @@ public class SpawnedCardsController : MonoBehaviour
             card.transform.position = Vector3.Lerp(card.transform.position, targetTransform.position, _cardMoveDuration);
             yield return null;
         }
+    }
+
+    private IEnumerator RotateCard(Card card)
+    {
+        float elapsedTime = 0f;
+        Quaternion startRotation = card.transform.rotation;
+        Quaternion targetRotation = Quaternion.identity;
+        while (elapsedTime < _cardRotationDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsedTime / _cardRotationDuration);
+            card.transform.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
+            yield return null;
+        }
+
+        card.transform.rotation = targetRotation;
     }
 
     public void ClearOpenedCards()

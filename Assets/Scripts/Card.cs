@@ -3,6 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
 public class Card : MonoBehaviour
 {
+    [SerializeField] private SpriteRenderer _cardBackSpriteRenderer;
     private SpriteRenderer _spriteRenderer;
 
     private void Awake()
@@ -13,6 +14,7 @@ public class Card : MonoBehaviour
     public void SetSortingOrder(int order)
     {
         _spriteRenderer.sortingOrder = order;
+        _cardBackSpriteRenderer.sortingOrder = order;
     }
 
     public void SetCardSprite(Sprite sprite)
