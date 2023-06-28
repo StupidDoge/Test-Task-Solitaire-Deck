@@ -29,6 +29,7 @@ public class Deck : MonoBehaviour
             foreach (Card card in _cards)
             {
                 card.transform.SetParent(transform);
+                card.transform.localPosition = Vector2.zero;
             }
         }
         else if (_cards.Count == 1)

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 public class SpawnedCardsController : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class SpawnedCardsController : MonoBehaviour
     [SerializeField] private Transform _firstCardPosition;
     [SerializeField] private Transform _secondCardPosition;
     [SerializeField] private Transform _thirdCardPosition;
+    [SerializeField] private float _cardMoveDuration;
 
     [SerializeField] private Card[] _openedCards = new Card[3];
 
@@ -47,9 +49,20 @@ public class SpawnedCardsController : MonoBehaviour
 
     private void SetupCard(Card card, Transform targetTransform, int sortingLayer)
     {
-        card.transform.position = targetTransform.position;
+        StartCoroutine(MoveCard(card, targetTransform));
         card.transform.parent = targetTransform;
         card.SetSortingOrder(sortingLayer);
+    }
+
+    private IEnumerator MoveCard(Card card, Transform targetTransform)
+    {
+        float counter = 0f;
+        while (counter < _cardMoveDuration)
+        {
+            counter += Time.deltaTime;
+            card.transform.position = Vector3.Lerp(card.transform.position, targetTransform.position, _cardMoveDuration);
+            yield return null;
+        }
     }
 
     public void ClearOpenedCards()
